@@ -31,7 +31,7 @@ const ValidateExpertInterface = () => {
   //this is where i'll consume API 
   const [users, setUsers] = useState([]);
   const fetchUsers = async () => { // function to get all users and store them users
-      const {data} = await axios.get("/dashboard/getListNonVerified");                 // getting the object of all users
+      const {data} = await axios.get("/dashboard/getListNonVerified");  // getting the object of all users
       setUsers(data);
   }
 

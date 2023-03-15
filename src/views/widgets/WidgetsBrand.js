@@ -1,11 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { CWidgetStatsD, CRow, CCol } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cibFacebook, cibLinkedin, cibTwitter, cilCalendar } from '@coreui/icons'
 import { CChart } from '@coreui/react-chartjs'
+import axios from 'axios'
 
 const WidgetsBrand = ({ withCharts }) => {
+  const [Manager, setManager] = useState('');
+  const getManagaer = async () => {
+    const manager  = await axios.get("/dashboard/fb");
+    setManager(manager)
+  }
+
+  useEffect(()=>{
+    getManagaer()
+  })
+  
   const chartOptions = {
     elements: {
       line: {
@@ -34,8 +45,9 @@ const WidgetsBrand = ({ withCharts }) => {
     },
   }
 
-  return (
-    <CRow>
+  if(Manager){
+    return (
+      <CRow>
       <CCol sm={6} lg={3}>
         <CWidgetStatsD
           className="mb-4"
@@ -63,8 +75,8 @@ const WidgetsBrand = ({ withCharts }) => {
           })}
           icon={<CIcon icon={cibFacebook} height={52} className="my-4 text-white" />}
           values={[
-            { title: 'friends', value: '89K' },
-            { title: 'feeds', value: '459' },
+            { title: 'Followers', value: '5' },
+            { title: 'Manager', value: Manager.data.name}
           ]}
           style={{
             '--cui-card-cap-bg': '#3b5998',
@@ -144,41 +156,14 @@ const WidgetsBrand = ({ withCharts }) => {
         />
       </CCol>
 
-      <CCol sm={6} lg={3}>
-        <CWidgetStatsD
-          className="mb-4"
-          color="warning"
-          {...(withCharts && {
-            chart: (
-              <CChart
-                className="position-absolute w-100 h-100"
-                type="line"
-                data={{
-                  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-                  datasets: [
-                    {
-                      backgroundColor: 'rgba(255,255,255,.1)',
-                      borderColor: 'rgba(255,255,255,.55)',
-                      pointHoverBackgroundColor: '#fff',
-                      borderWidth: 2,
-                      data: [35, 23, 56, 22, 97, 23, 64],
-                      fill: true,
-                    },
-                  ],
-                }}
-                options={chartOptions}
-              />
-            ),
-          })}
-          icon={<CIcon icon={cilCalendar} height={52} className="my-4 text-white" />}
-          values={[
-            { title: 'events', value: '12+' },
-            { title: 'meetings', value: '4' },
-          ]}
-        />
-      </CCol>
+      
     </CRow>
-  )
+    )
+  }else{
+    return(
+      <>LOAAAAADIIIIIING</>
+    )
+  }
 }
 
 WidgetsBrand.propTypes = {
